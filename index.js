@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5001
 const app = express()
 app.use(cors())
 app.use(express.json())
-app.use('/', express.static('static'))
+app.use(express.static(path.join(__dirname, 'build')))
 app.use('/api', router)
 
 app.use(errorHandler)
