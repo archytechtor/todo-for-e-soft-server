@@ -85,7 +85,13 @@ class UserController {
           {id: user.id}
         ]
       },
-      attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId'],
+      attributes: [
+        'id',
+        'name',
+        'surname',
+        'patronymic',
+        'leaderId'
+      ],
       order: [['surname', 'ASC']]
     })
     return res.json({count, workers})
@@ -105,7 +111,16 @@ class UserController {
 
       if (leadersOnly) {
         const {count, rows: leaders} = await User.findAndCountAll({
-          attributes: ['id', 'name', 'surname', 'patronymic', 'username', 'createdAt', 'updatedAt', 'leaderId']
+          attributes: [
+            'id',
+            'name',
+            'surname',
+            'patronymic',
+            'username',
+            'createdAt',
+            'updatedAt',
+            'leaderId'
+          ]
         })
 
         return res.json({count, leaders})
@@ -114,19 +129,46 @@ class UserController {
       const {count, rows: users} = await User.findAndCountAll({
         where: {
           [Op.and]: [
-            leader.length > 0 && {leaderId: {[Op.or]: [...leader.map(id => id === 'null' ? null : Number(id))]}},
-            worker.length > 0 && {id: {[Op.or]: [...worker.map(id => id === 'null' ? null : Number(id))]}}
+            leader.length > 0 &&
+            {
+              leaderId: {
+                [Op.or]: [...leader.map(id => id === 'null' ? null : Number(id))]
+              }
+            },
+            worker.length > 0 &&
+            {
+              id: {
+                [Op.or]: [...worker.map(id => id === 'null' ? null : Number(id))]
+              }
+            }
           ]
         },
         include: [
           {
             model: User,
             as: 'leader',
-            attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId']
+            attributes: [
+              'id',
+              'name',
+              'surname',
+              'patronymic',
+              'leaderId'
+            ]
           }
         ],
-        attributes: ['id', 'name', 'surname', 'patronymic', 'username', 'createdAt', 'updatedAt', 'leaderId'],
-        order: sorter[0] === 'leader' ? [[{model: User, as: 'leader'}, 'surname', sorter[1]]] : [sorter],
+        attributes: [
+          'id',
+          'name',
+          'surname',
+          'patronymic',
+          'username',
+          'createdAt',
+          'updatedAt',
+          'leaderId'
+        ],
+        order: sorter[0] === 'leader'
+          ? [[{model: User, as: 'leader'}, 'surname', sorter[1]]]
+          : [sorter],
         limit: pageSize,
         offset: pageSize * page - pageSize
       })
