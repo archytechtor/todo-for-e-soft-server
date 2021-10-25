@@ -1,6 +1,7 @@
 const sequelize = require('../../db')
 const {DataTypes} = require('sequelize')
 
+
 const User = sequelize.define('user', {
   id: {
     type: DataTypes.INTEGER,
@@ -46,7 +47,7 @@ const Todo = sequelize.define('todo', {
     type: DataTypes.INTEGER // 2 - высокий, 1 - средний, 0 - низкий
   },
   status: {
-    type: DataTypes.STRING // к выполнению, выполняется, выполнена, отменена
+    type: DataTypes.STRING // to_do - к выполнению, in_progress - выполняется, resolved - выполнена, cancelled - отменена
   },
   sla: {
     type: DataTypes.DATE,
