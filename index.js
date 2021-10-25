@@ -13,12 +13,14 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use('/api', router)
+
 if (process.env.NODE_ENV === 'production') {
    app.use(express.static(path.join(__dirname, 'build')))
    app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, 'build/index.html'))
    })
 }
+
 app.use(errorHandler)
 
 const start = async () => {
