@@ -122,7 +122,7 @@ class UserController {
             attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId']
           },
         ],
-        attributes: ['id', 'name', 'surname', 'patronymic', 'username', 'createdAt', 'updatedAt', 'leaderId', 'leader'],
+        attributes: ['id', 'name', 'surname', 'patronymic', 'username', 'createdAt', 'updatedAt', 'leaderId'],
         order: sorter[0] === 'leader' ? [[{model: User, as: 'leader'}, 'surname', sorter[1]]] : [sorter],
         limit: pageSize,
         offset: pageSize * page - pageSize
