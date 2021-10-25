@@ -91,6 +91,96 @@ class UserController {
     return res.json({count, workers})
   }
 
+  async getAllUsers(req, res, next) {
+    const {pageSize, page, sorter, filter} = req.body
+    const user = getUser(req)
+    const candidate = await User.findOne({where: {username: user.username}})
+
+    if (!candidate) {
+      return next(ApiError.badRequest('В доступе отказано'))
+    }
+
+    try {
+      const {leader} = filter
+
+      const {count, rows: users} = await User.findAndCountAll({
+        where: leader.length > 0
+          ? {leaderId: {[Op.or]: [...leader.map(id => id === 'null' ? null : Number(id))]}}
+          : {},
+        include: [
+          {
+            model: User,
+            as: 'leader',
+            attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId']
+          },
+        ],
+        order: sorter[0] === 'leader' ? [[{model: User, as: 'leader'}, 'surname', sorter[1]]] : [sorter],
+        limit: pageSize,
+        offset: pageSize * page - pageSize
+      })
+
+      return res.json({count, users})
+    } catch (e) {
+      return res.status(500).json({error: e.message})
+    }
+  }
+
+  async updateUser(req, res, next) {
+    const {id, name, surname, patronymic, username, leaderId} = req.body
+    const user = getUser(req)
+    const candidate = await User.findOne({where: {username: user.username}})
+
+    if (!candidate) {
+      return next(ApiError.badRequest('В доступе отказано'))
+    }
+
+    try {
+      const target = User.findOne({where: {id: id}})
+
+      if (!target) {
+        return res.json({error: 'Пользователь не найден'})
+      }
+
+      await User.update({
+        name,
+        surname,
+        patronymic,
+        username,
+        leaderId
+      }, {
+        where: {id: id}
+      })
+
+      return res.json({success: 'Данные успешно обновлены`'})
+    } catch (e) {
+      return res.status(500).json({error: e.message})
+    }
+  }
+
+  async deleteUser(req, res, next) {
+    const {id} = req.body
+    const user = getUser(req)
+    const candidate = await User.findOne({where: {username: user.username}})
+
+    if (!candidate) {
+      return next(ApiError.badRequest('В доступе отказано'))
+    }
+
+    try {
+      const target = User.findOne({where: {id: id}})
+
+      if (!target) {
+        return res.json({error: 'Пользователь не найден'})
+      }
+
+      await User.destroy({where: {id: id}})
+
+      return res.json({success: 'Пользователь успешно удалёе'})
+    } catch (e) {
+      return res.status(500).json({error: e.message})
+    }
+  }
+
 }
 
 

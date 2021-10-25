@@ -94,7 +94,7 @@ class TodoController {
           {
             model: User,
             as: 'assignee',
-            attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId'],
+            attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId']
           }
         ],
         order: sorter[0] === 'assignee' ? [[{model: User, as: 'assignee'}, 'surname', sorter[1]]] : [sorter],
@@ -106,7 +106,6 @@ class TodoController {
     } catch (e) {
       return res.status(500).json({error: e.message})
     }
-
   }
 
   async updateTodo(req, res, next) {
