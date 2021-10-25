@@ -107,7 +107,7 @@ class UserController {
     }
 
     try {
-      const {leader, worker} = filter
+      const {leader, username} = filter
 
       if (leadersOnly) {
         const {count, rows: leaders} = await User.findAndCountAll({
@@ -135,10 +135,10 @@ class UserController {
                 [Op.or]: [...leader.map(id => id === 'null' ? null : Number(id))]
               }
             },
-            worker.length > 0 &&
+            username.length > 0 &&
             {
               id: {
-                [Op.or]: [...worker.map(id => id === 'null' ? null : Number(id))]
+                [Op.or]: [...username.map(id => id === 'null' ? null : Number(id))]
               }
             }
           ]
