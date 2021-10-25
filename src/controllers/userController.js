@@ -92,7 +92,7 @@ class UserController {
   }
 
   async getAllUsers(req, res, next) {
-    const {pageSize, page, sorter, filter} = req.body
+    const {pageSize, page, sorter, filter, leadersOnly} = req.body
     const user = getUser(req)
     const candidate = await User.findOne({where: {username: user.username}})
 
@@ -102,6 +102,14 @@ class UserController {
 
     try {
       const {leader} = filter
+
+      if (leadersOnly) {
+        const {count, rows: leaders} = await User.findAndCountAll({
+        attributes: ['id', 'name', 'surname', 'patronymic', 'username', 'createdAt', 'updatedAt', 'leaderId']
+      })
+
+      return res.json({count, leaders})
+      }
 
       const {count, rows: users} = await User.findAndCountAll({
         where: leader.length > 0
@@ -114,6 +122,7 @@ class UserController {
             attributes: ['id', 'name', 'surname', 'patronymic', 'leaderId']
           },
         ],
+        attributes: ['id', 'name', 'surname', 'patronymic', 'username', 'createdAt', 'updatedAt', 'leaderId', 'leader'],
         order: sorter[0] === 'leader' ? [[{model: User, as: 'leader'}, 'surname', sorter[1]]] : [sorter],
         limit: pageSize,
         offset: pageSize * page - pageSize
