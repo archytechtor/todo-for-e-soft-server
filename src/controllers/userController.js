@@ -160,7 +160,7 @@ class UserController {
         where: {id: id}
       })
 
-      return res.json({success: 'Данные успешно обновлены`'})
+      return res.json({success: 'Данные успешно обновлены'})
     } catch (e) {
       return res.status(500).json({error: e.message})
     }
@@ -184,7 +184,7 @@ class UserController {
 
       await User.destroy({where: {id: id}})
 
-      return res.json({success: 'Пользователь успешно удалёе'})
+      return res.json({success: 'Пользователь успешно удалён'})
     } catch (e) {
       return res.status(500).json({error: e.message})
     }
